@@ -244,6 +244,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="date-badge" id="dateBadge">—</div>
   </div>
   <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div>
+  <div style="display:flex;justify-content:flex-end;margin-top:10px">
+    <button onclick="openBackupModal()" style="background:none;border:1.5px solid var(--border);border-radius:10px;padding:4px 12px;font-size:10px;font-family:'DM Sans',sans-serif;font-weight:600;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:5px">💾 Backup</button>
+  </div>
 </div>
 
 <div class="home-priorities">
@@ -340,6 +343,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div class="fw-rule"><div class="fw-num">3</div><div class="fw-text"><strong>Set 3 priorities</strong> — enter them in the strip at the top.</div></div>
       <div class="fw-rule"><div class="fw-num">4</div><div class="fw-text"><strong>Prep Monday:</strong> Clothes, gym bag, meals planned. Start the week with zero friction.</div></div>
     </div>
+  </div>
+</div>
+
+<!-- Backup/Restore modal -->
+<div class="modal-overlay" id="backupModal" onclick="if(event.target===this)closeBackupModal()">
+  <div class="modal-sheet">
+    <div class="modal-title">Backup & Restore 💾</div>
+    <p style="font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:20px">Keep a copy of all your data — schedule, food plan, priorities and checked tasks. Export regularly, especially before updating the app.</p>
+    <button onclick="exportData()" style="width:100%;padding:14px;background:#c07840;border:none;border-radius:12px;color:#fff;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:700;cursor:pointer;margin-bottom:10px">⬇ Export & Save Backup</button>
+    <button onclick="document.getElementById('restoreFile').click()" style="width:100%;padding:14px;background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;color:var(--text-muted);font-size:14px;font-family:'DM Sans',sans-serif;font-weight:700;cursor:pointer">⬆ Restore from Backup</button>
+    <input type="file" id="restoreFile" accept=".json" style="display:none" onchange="importData(event)">
+    <p style="font-size:11px;color:var(--text-dim);margin-top:14px;text-align:center;line-height:1.6">Restoring will replace your current data with the backup file.</p>
+    <button onclick="closeBackupModal()" style="width:100%;padding:12px;background:none;border:none;color:var(--text-dim);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:8px">Close</button>
   </div>
 </div>
 
@@ -717,6 +733,45 @@ function renderFoodTab(){
 }
 function selectFoodDay(day){foodDay=day;renderFoodTab();}
 function saveMeal(day,meal,val){foodData[foodKey(day,meal)]=val;save('gwp_food2',foodData);}
+
+// ── BACKUP & RESTORE ─────────────────────────────────────────────
+function openBackupModal(){document.getElementById('backupModal').classList.add('show');}
+function closeBackupModal(){document.getElementById('backupModal').classList.remove('show');}
+
+function exportData(){
+  const data={sched:sched,checked:checked,priorities:priorities,foodData:foodData,exportedAt:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const date=new Date();
+  a.href=url;
+  a.download=`esther-planner-backup-${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(data.sched){sched=data.sched;save('gwp_sched3',sched);}
+      if(data.checked){checked=data.checked;save('gwp_checked3',checked);}
+      if(data.priorities){priorities=data.priorities;save('gwp_prio',priorities);}
+      if(data.foodData){foodData=data.foodData;save('gwp_food2',foodData);}
+      closeBackupModal();
+      renderHomePrios();
+      renderToday();
+      updateProgress();
+      alert('✅ Backup restored successfully!');
+    }catch(err){
+      alert('❌ Could not read this file. Make sure it\'s a valid Esther Planner backup.');
+    }
+    e.target.value='';
+  };
+  reader.readAsText(file);
+}
 
 // ── INIT ─────────────────────────────────────────────────────────
 function initDate(){
