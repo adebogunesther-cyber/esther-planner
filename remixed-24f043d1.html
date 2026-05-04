@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Esther's Daily System</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#fdf6ee;--bg2:#faf0e4;--surface:#ffffff;--surface2:#fdf6ee;
+  --border:#e8d9c5;--border2:#f0e4d0;--text:#3d2c1e;--text-muted:#9a7d65;--text-dim:#c4a98a;
+  --radius:18px;--radius-sm:12px;--shadow:0 2px 16px rgba(180,140,100,.10);--shadow-sm:0 1px 6px rgba(180,140,100,.08);
+  --c-devotion:#f7e8f0;--c-devotion-b:#e8b4cf;--c-devotion-t:#a05078;
+  --c-gym:#e8f4ea;--c-gym-b:#a8d4ae;--c-gym-t:#3d7a48;
+  --c-morning:#fff3e0;--c-morning-b:#f5c97a;--c-morning-t:#9a6020;
+  --c-afternoon:#e8f0fb;--c-afternoon-b:#a4c0e8;--c-afternoon-t:#2d5a9a;
+  --c-evening:#f0ecf8;--c-evening-b:#c4b0e8;--c-evening-t:#5a3d8a;
+  --c-church:#fff0e8;--c-church-b:#f0c4a0;--c-church-t:#8a4820;
+  --c-reset:#e8f8f4;--c-reset-b:#90d4bc;--c-reset-t:#1e7a5e;
+  --c-rest:#fef0f0;--c-rest-b:#f0b4b4;--c-rest-t:#8a2020;
+  --c-catch:#f8f4e8;--c-catch-b:#d4c490;--c-catch-t:#6a5420;
+  --c-food:#f0f8e8;--c-food-b:#b8d890;--c-food-t:#3a6020;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:430px;margin:0 auto;overflow-x:hidden}
+
+/* HEADER */
+.header{background:var(--surface);padding:52px 24px 20px;border-bottom:1px solid var(--border2);box-shadow:var(--shadow-sm)}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.greeting{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;line-height:1.2}
+.greeting span{color:#c07840;font-style:italic}
+.date-badge{background:var(--bg2);border:1.5px solid var(--border);border-radius:20px;padding:6px 14px;font-size:11px;color:var(--text-muted);font-weight:500;letter-spacing:.4px;white-space:nowrap}
+.progress-summary{font-size:12px;color:var(--text-muted);margin-top:3px}
+.progress-summary strong{color:#c07840}
+.progress-bar-wrap{margin:14px 0 0;background:var(--bg2);border-radius:4px;height:4px;overflow:hidden;border:1px solid var(--border2)}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,#e8a050,#f0c878);border-radius:4px;transition:width .5s ease}
+
+/* HOME PRIORITIES */
+.home-priorities{margin:16px 20px 0;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow-sm)}
+.home-prio-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.home-prio-title{font-family:'Playfair Display',serif;font-size:15px;color:#c07840}
+.home-prio-edit-btn{background:none;border:1.5px solid var(--border);border-radius:10px;padding:3px 10px;font-size:10px;font-family:'DM Sans',sans-serif;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all .2s}
+.home-prio-edit-btn.on{border-color:#c07840;color:#c07840}
+.home-prio-rows{display:flex;flex-direction:column;gap:7px}
+.home-prio-row{display:flex;align-items:center;gap:10px}
+.home-prio-num{width:22px;height:22px;border-radius:50%;background:#fff3e0;border:1.5px solid #f0c878;font-size:11px;color:#c07840;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.home-prio-input{flex:1;background:transparent;border:none;border-bottom:1.5px solid transparent;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;padding:2px 0;transition:border-color .2s}
+.home-prio-input::placeholder{color:var(--text-dim);font-style:italic}
+.home-prio-input.editable{border-bottom-color:var(--border);background:var(--bg2);border-radius:6px;padding:4px 8px}
+.home-prio-input.editable:focus{border-bottom-color:#c07840}
+.home-prio-empty{font-size:12px;color:var(--text-dim);font-style:italic}
+
+/* MOOD */
+.mood-section{padding:16px 20px 0}
+.section-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;font-weight:600}
+.mood-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mood-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 6px;text-align:center;cursor:pointer;transition:all .2s;box-shadow:var(--shadow-sm)}
+.mood-card:active{transform:scale(.96)}
+.mood-card.active-good{border-color:#90c890;background:#f0f8f0}
+.mood-card.active-overwhelmed{border-color:#e8a0a0;background:#fff0f0}
+.mood-card.active-underwhelmed{border-color:#e8c870;background:#fff8e8}
+.mood-icon{font-size:20px;margin-bottom:4px}
+.mood-label{font-size:11px;font-weight:600;color:var(--text-muted);line-height:1.3}
+.mood-card.active-good .mood-label{color:#3d7a48}
+.mood-card.active-overwhelmed .mood-label{color:#8a3030}
+.mood-card.active-underwhelmed .mood-label{color:#8a6020}
+.mood-message{margin:12px 20px 0;padding:12px 16px;border-radius:var(--radius-sm);font-size:13px;line-height:1.6;display:none;animation:fadeIn .3s ease}
+.mood-message.show{display:block}
+.mood-message.good{background:#f0f9f0;border:1.5px solid #b8e0b8;color:#2d6a3d}
+.mood-message.overwhelmed{background:#fff0f0;border:1.5px solid #f0c0c0;color:#8a3030}
+.mood-message.underwhelmed{background:#fff8e8;border:1.5px solid #f0d890;color:#8a6020}
+
+/* TABS */
+.tabs{display:flex;margin:20px 20px 0;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:4px;gap:3px;box-shadow:var(--shadow-sm)}
+.tab{flex:1;padding:8px 4px;border:none;background:transparent;color:var(--text-muted);font-size:10px;font-family:'DM Sans',sans-serif;font-weight:600;border-radius:9px;cursor:pointer;transition:all .2s;letter-spacing:.3px}
+.tab.active{background:var(--bg2);color:#c07840;border:1.5px solid var(--border)}
+
+/* CONTENT */
+.content{padding:16px 20px 110px}
+.panel{display:none}
+.panel.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* DAY SELECTOR */
+.day-selector{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none}
+.day-selector::-webkit-scrollbar{display:none}
+.day-pill{flex-shrink:0;padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.day-pill.active{background:#c07840;border-color:#c07840;color:#fff}
+.day-pill.today{border-color:#c07840;color:#c07840}
+
+/* BLOCKS */
+.block{margin-bottom:12px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);transition:opacity .2s,transform .2s}
+.block.dragging{opacity:.5;transform:scale(.98)}
+.block.drag-over{border-color:#c07840;border-style:dashed}
+.block-header{display:flex;align-items:center;gap:8px;padding:12px 14px 10px;border-bottom:1px solid var(--border2)}
+.block-color-bar{width:4px;height:36px;border-radius:4px;flex-shrink:0}
+.block-icon{font-size:15px;flex-shrink:0}
+.block-title{font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;flex:1;min-width:0}
+.block-time-display{font-size:10px;color:var(--text-muted);font-weight:500;cursor:pointer;padding:2px 6px;border-radius:6px;transition:background .2s;white-space:nowrap;flex-shrink:0}
+.block-time-display:hover{background:var(--bg2)}
+.block-time-input{font-size:10px;color:var(--text);font-weight:500;border:1.5px solid #c07840;border-radius:6px;padding:2px 6px;outline:none;background:var(--surface);font-family:'DM Sans',sans-serif;width:130px;display:none}
+.drag-handle{cursor:grab;font-size:14px;color:var(--text-dim);padding:4px 2px;flex-shrink:0;user-select:none;-webkit-user-select:none;display:none}
+.drag-handle.show{display:block}
+.drag-handle:active{cursor:grabbing}
+.edit-block-btn{background:none;border:1.5px solid var(--border);color:var(--text-dim);font-size:10px;font-family:'DM Sans',sans-serif;font-weight:600;padding:4px 10px;border-radius:10px;cursor:pointer;transition:all .2s;flex-shrink:0}
+.edit-block-btn.on{border-color:#c07840;color:#c07840}
+
+/* CHECK ITEMS */
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border2);transition:background .15s;-webkit-user-select:none;user-select:none}
+.check-item:last-child{border-bottom:none}
+.check-item.tappable{cursor:pointer}
+.check-item.tappable:active{background:var(--bg2)}
+.check-box{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .2s;background:var(--surface2)}
+.check-item.checked .check-box{background:#e8a050;border-color:#e8a050}
+.check-tick{opacity:0;font-size:11px;color:#fff;font-weight:700;transition:opacity .2s}
+.check-item.checked .check-tick{opacity:1}
+.check-text{flex:1;font-size:13px;line-height:1.5;color:var(--text);transition:color .2s}
+.check-item.checked .check-text{color:var(--text-dim);text-decoration:line-through;text-decoration-color:var(--text-dim)}
+.check-sub{font-size:11px;color:var(--text-muted);margin-top:2px;display:block}
+.delete-btn{background:none;border:none;color:#e08080;font-size:18px;cursor:pointer;padding:0 3px;line-height:1;flex-shrink:0}
+
+/* ADD ROW */
+.add-row{display:none;gap:8px;padding:10px 14px;border-top:1px solid var(--border2);background:var(--bg2)}
+.add-row.show{display:flex}
+.add-input{flex:1;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none}
+.add-input:focus{border-color:#c07840}
+.add-btn{background:#c07840;border:none;border-radius:8px;color:#fff;font-size:18px;width:36px;cursor:pointer;font-weight:700;flex-shrink:0}
+
+/* FLOOR MODE */
+.floor-mode{background:#fff0f0;border:1.5px solid #f0c0c0;border-radius:var(--radius);padding:16px;margin-bottom:14px;display:none}
+.floor-mode.show{display:block;animation:fadeIn .3s ease}
+.floor-mode.under{background:#fff8e8;border-color:#f0d890}
+.floor-title{font-family:'Playfair Display',serif;font-size:16px;margin-bottom:6px;color:#8a3030}
+.floor-mode.under .floor-title{color:#8a6020}
+.floor-text{font-size:12px;color:var(--text-muted);line-height:1.6;margin-bottom:10px}
+
+/* PRIORITIES */
+.fw-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
+.fw-title{font-family:'Playfair Display',serif;font-size:17px;color:#c07840;margin-bottom:3px}
+.fw-sub{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;font-weight:600}
+.fw-rule{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start}
+.fw-num{width:22px;height:22px;border-radius:50%;background:#fff3e0;border:1.5px solid #f0c878;font-size:11px;color:#c07840;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;margin-top:1px}
+.fw-text{font-size:13px;line-height:1.6;color:var(--text-muted)}
+.fw-text strong{color:var(--text);font-weight:600}
+
+/* FOOD */
+.food-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;box-shadow:var(--shadow-sm)}
+.food-header{background:var(--c-food);border-bottom:1.5px solid var(--c-food-b);padding:12px 16px;display:flex;align-items:center;gap:10px}
+.food-header-icon{font-size:18px}
+.food-header-title{font-size:13px;font-weight:700;color:var(--c-food-t);text-transform:uppercase;letter-spacing:.5px}
+.food-header-sub{font-size:11px;color:var(--text-muted);margin-top:1px}
+.food-week-nav{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border2);background:var(--bg2)}
+.food-week-label{flex:1;font-size:12px;font-weight:600;color:var(--text-muted);text-align:center}
+.food-week-btn{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--text-muted);font-size:14px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.food-day-tabs{display:flex;overflow-x:auto;padding:8px 12px;gap:6px;border-bottom:1px solid var(--border2);scrollbar-width:none}
+.food-day-tabs::-webkit-scrollbar{display:none}
+.food-day-tab{flex-shrink:0;padding:5px 12px;border-radius:14px;border:1.5px solid var(--border);background:transparent;color:var(--text-muted);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.food-day-tab.active{background:#3a6020;border-color:#3a6020;color:#fff}
+.food-day-tab.today{border-color:#3a6020;color:#3a6020}
+.food-meals{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.meal-row{display:flex;gap:10px;align-items:flex-start}
+.meal-label{width:70px;flex-shrink:0}
+.meal-icon{font-size:16px;display:block;margin-bottom:2px}
+.meal-name{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
+.meal-time{font-size:10px;color:var(--text-dim)}
+.meal-input{flex:1;background:var(--bg2);border:1.5px solid var(--border2);border-radius:10px;padding:10px 12px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:none;min-height:38px;line-height:1.4}
+.meal-input:focus{border-color:#90c870;background:#fff}
+.meal-input::placeholder{color:var(--text-dim);font-style:italic}
+
+/* HIGHLIGHT */
+.highlight-tag{display:inline-block;background:#fff3e0;border:1.5px solid #f0c878;color:#c07840;font-size:10px;padding:2px 8px;border-radius:10px;margin-left:6px;letter-spacing:.4px;text-transform:uppercase;vertical-align:middle;font-weight:600}
+.week-day-title{font-family:'Playfair Display',serif;font-size:20px;color:#c07840;margin-bottom:16px}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-dim);font-size:13px;line-height:1.8}
+.empty-state .big{font-size:32px;margin-bottom:12px}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(253,246,238,.97);backdrop-filter:blur(16px);border-top:1.5px solid var(--border);padding:10px 16px 24px;display:flex;justify-content:space-around}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;padding:4px 8px;transition:color .2s}
+.nav-btn.active{color:#c07840}
+.nav-icon{font-size:19px}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(61,44,30,.4);z-index:200;align-items:flex-end;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal-sheet{background:var(--surface);border:1.5px solid var(--border);border-radius:20px 20px 0 0;padding:24px 24px 48px;width:100%;max-width:430px;animation:slideUp .25s ease;box-shadow:0 -4px 30px rgba(180,140,100,.15)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-title{font-family:'Playfair Display',serif;font-size:18px;color:#c07840;margin-bottom:16px}
+.modal-input{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:10px}
+.modal-input:focus{border-color:#c07840}
+.modal-btns{display:flex;gap:10px;margin-top:4px}
+.modal-btn{flex:1;padding:13px;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer}
+.modal-btn.save{background:#c07840;color:#fff}
+.modal-btn.cancel{background:var(--bg2);color:var(--text-muted);border:1.5px solid var(--border)}
+
+/* BLOCK COLOR THEMES */
+.block[data-type="devotion"] .block-header{background:var(--c-devotion);border-color:var(--c-devotion-b)}
+.block[data-type="devotion"] .block-color-bar{background:var(--c-devotion-b)}
+.block[data-type="devotion"] .block-title{color:var(--c-devotion-t)}
+.block[data-type="gym"] .block-header{background:var(--c-gym);border-color:var(--c-gym-b)}
+.block[data-type="gym"] .block-color-bar{background:var(--c-gym-b)}
+.block[data-type="gym"] .block-title{color:var(--c-gym-t)}
+.block[data-type="morning"] .block-header{background:var(--c-morning);border-color:var(--c-morning-b)}
+.block[data-type="morning"] .block-color-bar{background:var(--c-morning-b)}
+.block[data-type="morning"] .block-title{color:var(--c-morning-t)}
+.block[data-type="afternoon"] .block-header{background:var(--c-afternoon);border-color:var(--c-afternoon-b)}
+.block[data-type="afternoon"] .block-color-bar{background:var(--c-afternoon-b)}
+.block[data-type="afternoon"] .block-title{color:var(--c-afternoon-t)}
+.block[data-type="evening"] .block-header{background:var(--c-evening);border-color:var(--c-evening-b)}
+.block[data-type="evening"] .block-color-bar{background:var(--c-evening-b)}
+.block[data-type="evening"] .block-title{color:var(--c-evening-t)}
+.block[data-type="church"] .block-header{background:var(--c-church);border-color:var(--c-church-b)}
+.block[data-type="church"] .block-color-bar{background:var(--c-church-b)}
+.block[data-type="church"] .block-title{color:var(--c-church-t)}
+.block[data-type="reset"] .block-header{background:var(--c-reset);border-color:var(--c-reset-b)}
+.block[data-type="reset"] .block-color-bar{background:var(--c-reset-b)}
+.block[data-type="reset"] .block-title{color:var(--c-reset-t)}
+.block[data-type="rest"] .block-header{background:var(--c-rest);border-color:var(--c-rest-b)}
+.block[data-type="rest"] .block-color-bar{background:var(--c-rest-b)}
+.block[data-type="rest"] .block-title{color:var(--c-rest-t)}
+.block[data-type="catch"] .block-header{background:var(--c-catch);border-color:var(--c-catch-b)}
+.block[data-type="catch"] .block-color-bar{background:var(--c-catch-b)}
+.block[data-type="catch"] .block-title{color:var(--c-catch-t)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="greeting">Good morning, <span>Esther</span> ✦</div>
+      <div class="progress-summary" id="progressSummary">Tap your mood to begin ✨</div>
+    </div>
+    <div class="date-badge" id="dateBadge">—</div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div>
+</div>
+
+<div class="home-priorities">
+  <div class="home-prio-header">
+    <div class="home-prio-title">This Week's Priorities ✦</div>
+    <button class="home-prio-edit-btn" id="homePrioEditBtn" onclick="toggleHomePrioEdit()">Edit</button>
+  </div>
+  <div class="home-prio-rows" id="homePrioRows"></div>
+</div>
+
+<div class="mood-section">
+  <div class="section-label">How are you showing up today?</div>
+  <div class="mood-cards">
+    <div class="mood-card" onclick="setMood('good')"><div class="mood-icon">✨</div><div class="mood-label">Feeling Good</div></div>
+    <div class="mood-card" onclick="setMood('overwhelmed')"><div class="mood-icon">🌊</div><div class="mood-label">Over-whelmed</div></div>
+    <div class="mood-card" onclick="setMood('underwhelmed')"><div class="mood-icon">🌫️</div><div class="mood-label">Under-whelmed</div></div>
+  </div>
+  <div class="mood-message good" id="msgGood">Full power day. Run your complete routine and tackle the hardest task first. 💪</div>
+  <div class="mood-message overwhelmed" id="msgOverwhelmed">Close everything. Ask: <em>what ONE thing makes today count?</em> Do only that. 🌊</div>
+  <div class="mood-message underwhelmed" id="msgUnderwhelmed">Change your environment. Start with something creative. Reconnect with your why. 🌫️</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('today',this)">Today</button>
+  <button class="tab" onclick="showTab('week',this)">Week</button>
+  <button class="tab" onclick="showTab('food',this)">Food 🥗</button>
+  <button class="tab" onclick="showTab('framework',this)">System</button>
+</div>
+
+<div class="content">
+  <div class="panel active" id="panel-today">
+    <div class="floor-mode" id="floorMode"></div>
+    <div id="checklist-container"></div>
+  </div>
+
+  <div class="panel" id="panel-week">
+    <div class="day-selector" id="daySelector"></div>
+    <div id="week-detail"></div>
+  </div>
+
+  <div class="panel" id="panel-food">
+    <div class="food-card">
+      <div class="food-header">
+        <span class="food-header-icon">🥗</span>
+        <div>
+          <div class="food-header-title">Food Timetable</div>
+          <div class="food-header-sub">Editable weekly — tap a day to plan meals</div>
+        </div>
+      </div>
+      <div class="food-week-nav">
+        <button class="food-week-btn" onclick="changeWeek(-1)">‹</button>
+        <div class="food-week-label" id="foodWeekLabel">This week</div>
+        <button class="food-week-btn" onclick="changeWeek(1)">›</button>
+      </div>
+      <div class="food-day-tabs" id="foodDayTabs"></div>
+      <div class="food-meals" id="foodMeals"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-framework">
+    <div class="fw-card">
+      <div class="fw-title">The Bridge Fix</div>
+      <div class="fw-sub">Solving plan-but-don't-execute</div>
+      <div class="fw-rule"><div class="fw-num">1</div><div class="fw-text"><strong>Sunday:</strong> Pick your top 3 priorities for the week. Enter them in the priorities strip.</div></div>
+      <div class="fw-rule"><div class="fw-num">2</div><div class="fw-text"><strong>Each morning:</strong> Identify your ONE non-negotiable task — the thing that can't slip today.</div></div>
+      <div class="fw-rule"><div class="fw-num">3</div><div class="fw-text"><strong>Set a 25-min timer.</strong> Work only on that task. No switching, no Instagram first.</div></div>
+      <div class="fw-rule"><div class="fw-num">4</div><div class="fw-text"><strong>Done = done.</strong> Once your ONE thing is complete, everything else is a bonus.</div></div>
+    </div>
+    <div class="fw-card">
+      <div class="fw-title">Business Time Blocks</div>
+      <div class="fw-sub">How to split your 3–4 focused hours</div>
+      <div class="fw-rule"><div class="fw-num">💄</div><div class="fw-text"><strong>Glossy with Pride / Glossara</strong> — 2 hrs/day. Orders, customer care, content, brand strategy.</div></div>
+      <div class="fw-rule"><div class="fw-num">✨</div><div class="fw-text"><strong>GlossyBeautyStudio (MUA)</strong> — 1–1.5 hrs/day. Portfolio, client outreach, bookings, skill practice.</div></div>
+      <div class="fw-rule"><div class="fw-num">📋</div><div class="fw-text"><strong>Admin batch</strong> — 30 mins, Mon/Wed/Fri only. Not every day — protect your energy.</div></div>
+    </div>
+    <div class="fw-card">
+      <div class="fw-title">The Two-Floor System</div>
+      <div class="fw-sub">For overwhelmed & underwhelmed days</div>
+      <div class="fw-rule"><div class="fw-num">🌊</div><div class="fw-text"><strong>Overwhelmed:</strong> ONE task, 25 mins, stop. Day = won. That's it.</div></div>
+      <div class="fw-rule"><div class="fw-num">🌫️</div><div class="fw-text"><strong>Underwhelmed:</strong> Change location, call someone energizing, start creative. Momentum builds.</div></div>
+      <div class="fw-rule"><div class="fw-num">✦</div><div class="fw-text"><strong>Never miss twice.</strong> One lost day is data. Two is a pattern. Catch it early.</div></div>
+    </div>
+    <div class="fw-card">
+      <div class="fw-title">Saturday = Recovery Day</div>
+      <div class="fw-sub">Intentional rest, not collapse</div>
+      <div class="fw-rule"><div class="fw-num">💆</div><div class="fw-text"><strong>You don't rest when you break down.</strong> You rest on Saturday so you never break down.</div></div>
+      <div class="fw-rule"><div class="fw-num">✦</div><div class="fw-text"><strong>Sunday is planning</strong>, not rest. Saturday is rest. Keep them separate.</div></div>
+    </div>
+    <div class="fw-card">
+      <div class="fw-title">Sunday = Weekly Reset</div>
+      <div class="fw-sub">Your regulating anchor</div>
+      <div class="fw-rule"><div class="fw-num">1</div><div class="fw-text"><strong>Brain dump:</strong> Clear every open task, worry, idea out of your head.</div></div>
+      <div class="fw-rule"><div class="fw-num">2</div><div class="fw-text"><strong>Review:</strong> What moved last week? What didn't? Data, not judgment.</div></div>
+      <div class="fw-rule"><div class="fw-num">3</div><div class="fw-text"><strong>Set 3 priorities</strong> — enter them in the strip at the top.</div></div>
+      <div class="fw-rule"><div class="fw-num">4</div><div class="fw-text"><strong>Prep Monday:</strong> Clothes, gym bag, meals planned. Start the week with zero friction.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- New block modal -->
+<div class="modal-overlay" id="newBlockModal" onclick="if(event.target===this)closeNewBlockModal()">
+  <div class="modal-sheet">
+    <div class="modal-title">New Time Block ✦</div>
+    <input class="modal-input" id="nbTitle" placeholder="Block name e.g. Deep Work, Self Care…" />
+    <input class="modal-input" id="nbTime" placeholder="Time e.g. 2:00–4:00 PM" />
+    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap" id="nbTypeGrid"></div>
+    <input class="modal-input" id="nbTask1" placeholder="First task (optional)" onkeydown="if(event.key==='Enter')saveNewBlock()" />
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="closeNewBlockModal()">Cancel</button>
+      <button class="modal-btn save" onclick="saveNewBlock()">Add Block ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit task modal -->
+<div class="modal-overlay" id="editModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-sheet">
+    <div class="modal-title">Edit Task</div>
+    <input class="modal-input" id="editText" placeholder="Task name" onkeydown="if(event.key==='Enter')saveEdit()"/>
+    <input class="modal-input" id="editSub" placeholder="Subtitle / time (optional)" style="font-size:12px" onkeydown="if(event.key==='Enter')saveEdit()"/>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-btn save" onclick="saveEdit()">Save ✓</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DEFAULT SCHEDULE ────────────────────────────────────────────
+const DEFAULT = {
+  Mon:{gym:true,blocks:[
+    {type:'devotion',icon:'🙏',title:'Morning Devotion',time:'6:00–7:30 AM',items:[
+      {text:'Wake up & freshen up',sub:'6:00 AM'},
+      {text:'Join online church prayer',sub:'6:15 AM'},
+      {text:'Personal Bible study',sub:'7:00–7:30 AM'}
+    ]},
+    {type:'gym',icon:'🏋️',title:'Gym',time:'7:30–9:30 AM',items:[
+      {text:'Gym session',sub:'Mon / Wed / Fri / Sat'}
+    ]},
+    {type:'morning',icon:'🌅',title:'Morning Power Block',time:'10:00 AM–12:00 PM',items:[
+      {text:'Write your ONE non-negotiable task for today',sub:'Do this before anything else'},
+      {text:'Glossy with Pride — orders, content or customer care',sub:'60–75 mins focused'},
+      {text:'GlossyBeautyStudio — portfolio or client outreach',sub:'30–45 mins'}
+    ]},
+    {type:'afternoon',icon:'☀️',title:'Afternoon Work Block',time:'1:00–4:00 PM',items:[
+      {text:'Glossy brand / strategy work',sub:'45 mins'},
+      {text:'Social media content or scheduling',sub:'30 mins'},
+      {text:'Admin batch — emails, DMs, errands',sub:'Mon/Wed/Fri only — 30 mins'}
+    ]},
+    {type:'evening',icon:'🌙',title:'Evening Commitments',time:'8:00–10:00 PM+',items:[
+      {text:'Discipleship Bible study',sub:'8:00–9:00 PM'},
+      {text:'Meeting with your disciple',sub:'9:00–10:00 PM'},
+      {text:'Call with partner',sub:'10:00 PM+'}
+    ]}
+  ]},
+  Tue:{gym:false,blocks:[
+    {type:'devotion',icon:'🙏',title:'Morning Devotion',time:'6:00–7:30 AM',items:[
+      {text:'Wake up & freshen up',sub:'6:00 AM'},
+      {text:'Prayer & online church prayer',sub:'6:15 AM'},
+      {text:'Full Bible study — no gym rush',sub:'6:30–7:30 AM'}
+    ]},
+    {type:'morning',icon:'🌅',title:'Morning Power Block',time:'8:00 AM–12:00 PM',items:[
+      {text:'Write your ONE non-negotiable task',sub:'Before you open Instagram'},
+      {text:'Deep work — Glossy with Pride strategy or content',sub:'90 mins — peak energy window'},
+      {text:'GlossyBeautyStudio — bookings, DMs or portfolio',sub:'45 mins'}
+    ]},
+    {type:'afternoon',icon:'☀️',title:'Afternoon Block',time:'1:00–4:00 PM',items:[
+      {text:'Glossy content creation or campaign planning',sub:'60 mins'},
+      {text:'MUA skill practice or makeup academy review',sub:'45 mins'},
+      {text:'Personal errands or rest',sub:'Protect this buffer'}
+    ]},
+    {type:'evening',icon:'🌙',title:'Evening',time:'8:00–10:00 PM+',items:[
+      {text:'Discipleship Bible study',sub:'8:00–9:00 PM'},
+      {text:'Call with partner',sub:'10:00 PM+'}
+    ]}
+  ]},
+  Wed:{gym:true,blocks:[
+    {type:'devotion',icon:'🙏',title:'Morning Devotion',time:'6:00–7:30 AM',items:[
+      {text:'Wake up & freshen up',sub:'6:00 AM'},
+      {text:'Online church prayer',sub:'6:15 AM'},
+      {text:'Bible study',sub:'7:00–7:30 AM'}
+    ]},
+    {type:'gym',icon:'🏋️',title:'Gym',time:'7:30–9:30 AM',items:[
+      {text:'Gym session',sub:'Mon / Wed / Fri / Sat'}
+    ]},
+    {type:'morning',icon:'🌅',title:'Morning Power Block',time:'10:00 AM–12:00 PM',items:[
+      {text:'Write your ONE non-negotiable task',sub:'Before you open Instagram'},
+      {text:'Glossy with Pride — content or sales follow-up',sub:'60 mins'},
+      {text:'Social media scheduling for the week',sub:'30 mins — batch it here'}
+    ]},
+    {type:'afternoon',icon:'☀️',title:'Afternoon Block',time:'1:00–4:00 PM',items:[
+      {text:'GlossyBeautyStudio — bookings or portfolio',sub:'60 mins'},
+      {text:'Admin batch',sub:'30 mins — Wed is an admin day'},
+      {text:'Rest or content creation',sub:'Recharge before busy evening'}
+    ]},
+    {type:'evening',icon:'🌙',title:'Evening Commitments',time:'8:00–10:00 PM+',items:[
+      {text:'Discipleship Bible study',sub:'8:00–9:00 PM'},
+      {text:'Meeting with your disciple',sub:'9:00–10:00 PM'},
+      {text:'Call with partner',sub:'10:00 PM+'}
+    ]}
+  ]},
+  Thu:{gym:false,blocks:[
+    {type:'devotion',icon:'🙏',title:'Morning Devotion',time:'6:00–7:30 AM',items:[
+      {text:'Wake up & freshen up',sub:'6:00 AM'},
+      {text:'Prayer & online church prayer',sub:'6:15 AM'},
+      {text:'Full Bible study',sub:'6:30–7:30 AM'}
+    ]},
+    {type:'morning',icon:'🌅',title:'Morning Power Block',time:'8:00 AM–12:00 PM',items:[
+      {text:'Write your ONE non-negotiable task',sub:'Write it before anything else'},
+      {text:'Deep work — biggest business priority this week',sub:'90 mins — your best hours'},
+      {text:'Glossy with Pride content or brand strategy',sub:'60 mins'}
+    ]},
+    {type:'afternoon',icon:'☀️',title:'Afternoon Block',time:'1:00–4:00 PM',items:[
+      {text:'MUA practice or client-facing work',sub:'60 mins'},
+      {text:'Glossy customer care or orders',sub:'45 mins'},
+      {text:'Rest or personal time',sub:'Long evening ahead — protect energy'}
+    ]},
+    {type:'evening',icon:'🌙',title:'Evening',time:'8:00–10:00 PM+',items:[
+      {text:'Discipleship Bible study',sub:'8:00–9:00 PM'},
+      {text:'Call with partner',sub:'10:00 PM+'}
+    ]}
+  ]},
+  Fri:{gym:true,blocks:[
+    {type:'devotion',icon:'🙏',title:'Morning Devotion',time:'6:00–7:30 AM',items:[
+      {text:'Wake up & freshen up',sub:'6:00 AM'},
+      {text:'Online church prayer',sub:'6:15 AM'},
+      {text:'Bible study',sub:'7:00–7:30 AM'}
+    ]},
+    {type:'gym',icon:'🏋️',title:'Gym',time:'7:30–9:30 AM',items:[
+      {text:'Gym session',sub:'Mon / Wed / Fri / Sat'}
+    ]},
+    {type:'morning',icon:'🌅',title:'Morning Power Block',time:'10:00 AM–12:00 PM',items:[
+      {text:'Week review — what got done, what didn\'t',sub:'10 mins, no judgment'},
+      {text:'Glossy with Pride — wrap up week\'s tasks',sub:'45 mins'},
+      {text:'Admin batch — final sweep of the week',sub:'30 mins'}
+    ]},
+    {type:'afternoon',icon:'☀️',title:'Afternoon — Creative & Rest',time:'1:00–5:00 PM',items:[
+      {text:'Creative or fun work — content, branding, ideas',sub:'End the week on something you enjoy'},
+      {text:'Rest, social time, self-care',sub:'You\'ve earned it'}
+    ]},
+    {type:'evening',icon:'🌙',title:'Evening',time:'8:00–10:00 PM+',items:[
+      {text:'Discipleship Bible study',sub:'8:00–9:00 PM'},
+      {text:'Call with partner',sub:'10:00 PM+'}
+    ]}
+  ]},
+  Sat:{gym:true,blocks:[
+    {type:'devotion',icon:'🙏',title:'Morning Devotion',time:'6:30–7:30 AM',items:[
+      {text:'Wake up & freshen up',sub:'6:30 AM'},
+      {text:'Personal prayer',sub:'6:30–7:00 AM'},
+      {text:'Bible study',sub:'7:00–7:30 AM'}
+    ]},
+    {type:'gym',icon:'🏋️',title:'Gym',time:'7:30–9:30 AM',items:[
+      {text:'Gym session',sub:'Mon / Wed / Fri / Sat'}
+    ]},
+    {type:'rest',icon:'💆',title:'Recovery & Rest',time:'10:00 AM onwards',items:[
+      {text:'Do absolutely nothing business-related',sub:'This is your rule, not a suggestion'},
+      {text:'Nourish yourself — eat well, rest, hydrate',sub:'Your body is carrying a lot this week'},
+      {text:'Something purely for enjoyment — walk, movie, friends',sub:'Anything that fills your cup'},
+      {text:'Light skin care or self-care routine',sub:'You deserve it'},
+      {text:'Prepare outfit for Sunday church',sub:'Lay it out tonight so Sunday morning is smooth'}
+    ]},
+    {type:'evening',icon:'🌙',title:'Evening Wind Down',time:'8:00 PM+',items:[
+      {text:'Brain dump — offload anything on your mind',sub:'15 mins max, then close it'},
+      {text:'Call with partner',sub:'10:00 PM+'}
+    ]}
+  ]},
+  Sun:{gym:false,blocks:[
+    {type:'church',icon:'⛪',title:'Church — First Service',time:'8:00–10:00 AM',items:[
+      {text:'Get ready & leave for church',sub:'Aim to leave by 7:30 AM'},
+      {text:'First service',sub:'8:00–10:00 AM'},
+      {text:'Travel home',sub:'Home by 12:00–1:00 PM'}
+    ]},
+    {type:'rest',icon:'🛋️',title:'Rest & Lunch',time:'1:00–2:00 PM',items:[
+      {text:'Eat a proper meal — no skipping today',sub:'You need energy for the reset'},
+      {text:'Short rest or nap',sub:'Fully optional but encouraged'}
+    ]},
+    {type:'reset',icon:'📋',title:'Weekly Reset',time:'2:00–4:00 PM',items:[
+      {text:'Brain dump — every open task, idea, worry',sub:'Clear your head completely'},
+      {text:'Review last week — what moved, what didn\'t',sub:'Data, not judgment'},
+      {text:'Enter your 3 priorities in the strip at the top',sub:'Across all businesses — only 3'},
+      {text:'Assign priorities to specific days',sub:'Block the time now'},
+      {text:'Plan your meals for the week',sub:'Open the Food tab and fill it in'}
+    ]},
+    {type:'afternoon',icon:'☀️',title:'Monday Prep',time:'4:00–5:00 PM',items:[
+      {text:'Lay out Monday outfit & gym bag',sub:'Zero friction to start the week'},
+      {text:'Confirm gym time for Monday morning',sub:'Tell someone if it helps you commit'},
+      {text:'Rest completely after this — no more work',sub:'Sunday evenings are protected'}
+    ]},
+    {type:'evening',icon:'🌙',title:'Evening',time:'10:00 PM+',items:[
+      {text:'Call with partner',sub:'10:00 PM+'}
+    ]}
+  ]}
+};
+
+const FLOOR = {
+  overwhelmed:[
+    {text:'Close all tabs and lists. Take 3 deep breaths.',sub:'2 mins'},
+    {text:'Write ONE task that would make today count',sub:'Just one — nothing else matters right now'},
+    {text:'Set a 25-min timer and do only that task',sub:'Then you\'re done. Day = won.'}
+  ],
+  underwhelmed:[
+    {text:'Change your environment — go somewhere different',sub:'Even just a different room or outside'},
+    {text:'Call or voice note someone who energizes you',sub:'10 mins max'},
+    {text:'Start with the most creative or fun thing on your list',sub:'Let momentum build naturally'}
+  ]
+};
+
+// ── STATE ────────────────────────────────────────────────────────
+let mood=null, currentViewDay=null, weekDay=null, editTarget=null, editModes={};
+let foodWeekOffset=0, foodDay=null;
+let dragSrc=null, dragSrcDay=null;
+
+function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
+function save(k,v){localStorage.setItem(k,JSON.stringify(v));}
+
+let sched=load('gwp_sched3',JSON.parse(JSON.stringify(DEFAULT)));
+let checked=load('gwp_checked3',{});
+let priorities=load('gwp_prio',{p1:'',p2:'',p3:''});
+let foodData=load('gwp_food2',{});
+
+const DAY_ORDER=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const DAY_MAP={Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6,Sun:0};
+const FULL={Mon:'Monday',Tue:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Fri:'Friday',Sat:'Saturday',Sun:'Sunday'};
+const MEALS=[
+  {key:'breakfast',icon:'🌅',label:'Breakfast',time:'7:30–8:30 AM',placeholder:'e.g. oats with banana, boiled eggs…'},
+  {key:'snack',icon:'🍎',label:'Snack',time:'12:00–1:00 PM',placeholder:'e.g. fruit, nuts, smoothie…'},
+  {key:'dinner',icon:'🍽️',label:'Dinner',time:'6:00–7:30 PM',placeholder:'e.g. rice & stew, pasta, soup…'}
+];
+
+function todayKey(){return DAY_ORDER[new Date().getDay()===0?6:new Date().getDay()-1];}
+function ck(day,bi,ii){return new Date().toDateString()+'_'+day+'_'+bi+'_'+ii;}
+
+// ── PROGRESS ────────────────────────────────────────────────────
+function updateProgress(){
+  const day=todayKey(),s=sched[day];if(!s)return;
+  let total=0,done=0;
+  s.blocks.forEach((b,bi)=>b.items.forEach((_,ii)=>{total++;if(checked[ck(day,bi,ii)])done++;}));
+  const pct=total>0?Math.round(done/total*100):0;
+  document.getElementById('progressBar').style.width=pct+'%';
+  document.getElementById('progressSummary').innerHTML=total>0?`<strong>${done}/${total}</strong> tasks completed today`:'Tap your mood to begin ✨';
+}
+
+// ── TODAY TAB ────────────────────────────────────────────────────
+// currentViewDay can be any day — not locked to today
+function getViewDay(){return currentViewDay||todayKey();}
+
+function renderTodayDayNav(){
+  const today=todayKey(), vd=getViewDay();
+  // Show Mon–Sun nav strip inside today panel
+  let html='<div class="day-selector" id="todayDayNav" style="margin-bottom:14px">';
+  DAY_ORDER.forEach(d=>{
+    const isToday=d===today, isActive=d===vd;
+    html+=`<div class="day-pill ${isActive?'active':isToday?'today':''}" onclick="switchTodayDay('${d}')">${d}${isToday?' ✦':''}</div>`;
+  });
+  html+='</div>';
+  return html;
+}
+
+function switchTodayDay(day){currentViewDay=day;renderToday();}
+
+function renderToday(){
+  const vd=getViewDay(), today=todayKey();
+  const s=sched[vd];
+  const container=document.getElementById('checklist-container');
+  const floorEl=document.getElementById('floorMode');
+
+  // Floor mode only on today
+  if(vd===today&&(mood==='overwhelmed'||mood==='underwhelmed')){
+    floorEl.className='floor-mode show'+(mood==='underwhelmed'?' under':'');
+    const items=FLOOR[mood];
+    floorEl.innerHTML=`<div class="floor-title">${mood==='overwhelmed'?'🌊 Overwhelmed Floor':'🌫️ Underwhelmed Floor'}</div>
+      <div class="floor-text">Just do these three. That's enough for today.</div>
+      ${items.map((item,i)=>{const k='floor_'+mood+'_'+i;return`<div class="check-item tappable ${checked[k]?'checked':''}" onclick="toggleFloor('${mood}',${i},this)">
+        <div class="check-box"><span class="check-tick">✓</span></div>
+        <div class="check-text">${item.text}<span class="check-sub">${item.sub}</span></div></div>`;}).join('')}`;
+  } else {floorEl.className='floor-mode';floorEl.innerHTML='';}
+
+  let html=renderTodayDayNav();
+
+  // Day label
+  const isToday=vd===today;
+  html+=`<div style="font-family:'Playfair Display',serif;font-size:17px;color:#c07840;margin-bottom:12px">${FULL[vd]}${isToday?' <span style="font-size:12px;color:var(--text-muted);font-family:\'DM Sans\',sans-serif">— Today</span>':''}</div>`;
+
+  if(!s){container.innerHTML=html+'<div class="empty-state"><div class="big">✦</div>No schedule for this day yet.</div>';return;}
+
+  html+=s.blocks.map((block,bi)=>{
+    const mk=vd+'_'+bi, editing=!!editModes[mk];
+    const dragHandleClass='drag-handle'+(editing?' show':'');
+    return `<div class="block" data-type="${block.type||'morning'}" data-day="${vd}" data-bi="${bi}" draggable="${editing?'true':'false'}"
+      ondragstart="onDragStart(event,'${vd}',${bi})" ondragover="onDragOver(event)" ondrop="onDrop(event,'${vd}',${bi})" ondragend="onDragEnd(event)">
+      <div class="block-header">
+        <span class="${dragHandleClass}" title="Drag to reorder">⠿</span>
+        <div class="block-color-bar"></div>
+        <span class="block-icon">${block.icon}</span>
+        <span class="block-title">${block.title}</span>
+        <span class="block-time-display" id="tdisp_${vd}_${bi}" onclick="${editing?`startTimeEdit('${vd}',${bi})`:'void(0)'}" style="${editing?'cursor:pointer':'cursor:default'}" title="${editing?'Tap to edit time':''}">${block.time||''}</span>
+        <input class="block-time-input" id="tinput_${vd}_${bi}" value="${block.time||''}" placeholder="e.g. 7:00–9:00 AM" onblur="saveTime('${vd}',${bi})" onkeydown="if(event.key==='Enter')saveTime('${vd}',${bi})">
+        <button class="edit-block-btn ${editing?'on':''}" onclick="toggleEdit('${vd}',${bi})">${editing?'Done':'Edit'}</button>
+      </div>
+      ${block.items.map((item,ii)=>{const k=ck(vd,bi,ii),isC=!!checked[k];
+        return `<div class="check-item ${isC?'checked':''} ${!editing?'tappable':''}" ${!editing?`onclick="toggleItem('${vd}',${bi},${ii},this)"`:''}>
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text" ${editing?`onclick="openEdit('${vd}',${bi},${ii})" style="cursor:pointer"`:''}>
+            ${item.text}<span class="check-sub">${item.sub||''}</span></div>
+          ${editing?`<button class="delete-btn" onclick="deleteItem('${vd}',${bi},${ii})">×</button>`:''}</div>`;}).join('')}
+      <div class="add-row ${editing?'show':''}" id="addRow_${vd}_${bi}">
+        <input class="add-input" id="addInput_${vd}_${bi}" placeholder="Add a task…" onkeydown="if(event.key==='Enter')addItem('${vd}',${bi})">
+        <button class="add-btn" onclick="addItem('${vd}',${bi})">+</button>
+      </div></div>`;}).join('');
+
+  // Add block button
+  html+=`<div style="margin-top:4px">
+    <button onclick="openNewBlockModal('${vd}')" style="width:100%;padding:14px;background:var(--surface);border:1.5px dashed var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:13px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px"
+      onmouseover="this.style.borderColor='#c07840';this.style.color='#c07840'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
+      <span style="font-size:18px">+</span> Add new time block
+    </button>
+  </div>`;
+
+  container.innerHTML=html;
+  updateProgress();
+}
+
+// Time editing
+function startTimeEdit(day,bi){
+  const disp=document.getElementById('tdisp_'+day+'_'+bi);
+  const inp=document.getElementById('tinput_'+day+'_'+bi);
+  if(!disp||!inp)return;
+  disp.style.display='none';
+  inp.style.display='block';
+  inp.focus();inp.select();
+}
+function saveTime(day,bi){
+  const disp=document.getElementById('tdisp_'+day+'_'+bi);
+  const inp=document.getElementById('tinput_'+day+'_'+bi);
+  if(!inp)return;
+  sched[day].blocks[bi].time=inp.value.trim();
+  save('gwp_sched3',sched);
+  if(disp){disp.textContent=inp.value.trim();disp.style.display='';inp.style.display='none';}
+}
+
+// Drag & drop reorder
+function onDragStart(e,day,bi){dragSrc=bi;dragSrcDay=day;e.currentTarget.classList.add('dragging');}
+function onDragOver(e){e.preventDefault();e.currentTarget.classList.add('drag-over');}
+function onDrop(e,day,bi){
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if(dragSrcDay!==day||dragSrc===bi)return;
+  const blocks=sched[day].blocks;
+  const moved=blocks.splice(dragSrc,1)[0];
+  blocks.splice(bi,0,moved);
+  save('gwp_sched3',sched);
+  renderToday();
+}
+function onDragEnd(e){e.currentTarget.classList.remove('dragging');document.querySelectorAll('.block.drag-over').forEach(b=>b.classList.remove('drag-over'));}
+
+function toggleItem(day,bi,ii,el){const k=ck(day,bi,ii);checked[k]=!checked[k];save('gwp_checked3',checked);el.classList.toggle('checked',checked[k]);updateProgress();}
+function toggleFloor(m,idx,el){const k='floor_'+m+'_'+idx;checked[k]=!checked[k];save('gwp_checked3',checked);el.classList.toggle('checked',checked[k]);}
+function toggleEdit(day,bi){const mk=day+'_'+bi;editModes[mk]=!editModes[mk];renderToday();}
+function addItem(day,bi){const inp=document.getElementById('addInput_'+day+'_'+bi),val=inp.value.trim();if(!val)return;sched[day].blocks[bi].items.push({text:val,sub:''});save('gwp_sched3',sched);inp.value='';renderToday();}
+function deleteItem(day,bi,ii){sched[day].blocks[bi].items.splice(ii,1);save('gwp_sched3',sched);renderToday();}
+
+// ── NEW BLOCK MODAL ──────────────────────────────────────────────
+const BLOCK_TYPES=[
+  {type:'morning',icon:'🌅',label:'Morning'},{type:'afternoon',icon:'☀️',label:'Afternoon'},
+  {type:'evening',icon:'🌙',label:'Evening'},{type:'devotion',icon:'🙏',label:'Devotion'},
+  {type:'gym',icon:'🏋️',label:'Gym'},{type:'rest',icon:'💆',label:'Rest'},
+  {type:'reset',icon:'📋',label:'Planning'},{type:'church',icon:'⛪',label:'Church'},
+  {type:'catch',icon:'📝',label:'Other'}
+];
+let nbDay=null, nbSelectedType='morning';
+
+function openNewBlockModal(day){
+  nbDay=day; nbSelectedType='morning';
+  document.getElementById('nbTitle').value='';
+  document.getElementById('nbTime').value='';
+  document.getElementById('nbTask1').value='';
+  // render type grid
+  document.getElementById('nbTypeGrid').innerHTML=BLOCK_TYPES.map(t=>
+    `<button onclick="selectNbType('${t.type}')" id="nbt_${t.type}" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:10px;border:1.5px solid var(--border);background:${t.type==='morning'?'var(--bg2)':'var(--surface)'};color:${t.type==='morning'?'#c07840':'var(--text-muted)'};font-size:11px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:all .2s">
+      <span>${t.icon}</span>${t.label}</button>`).join('');
+  document.getElementById('newBlockModal').classList.add('show');
+  setTimeout(()=>document.getElementById('nbTitle').focus(),120);
+}
+function selectNbType(type){
+  nbSelectedType=type;
+  BLOCK_TYPES.forEach(t=>{
+    const btn=document.getElementById('nbt_'+t.type);if(!btn)return;
+    const on=t.type===type;
+    btn.style.background=on?'var(--bg2)':'var(--surface)';
+    btn.style.borderColor=on?'#c07840':'var(--border)';
+    btn.style.color=on?'#c07840':'var(--text-muted)';
+  });
+}
+function closeNewBlockModal(){document.getElementById('newBlockModal').classList.remove('show');nbDay=null;}
+function saveNewBlock(){
+  const title=document.getElementById('nbTitle').value.trim();
+  if(!title){document.getElementById('nbTitle').focus();return;}
+  const time=document.getElementById('nbTime').value.trim();
+  const task1=document.getElementById('nbTask1').value.trim();
+  const bt=BLOCK_TYPES.find(t=>t.type===nbSelectedType)||BLOCK_TYPES[0];
+  const newBlock={type:bt.type,icon:bt.icon,title,time,items:task1?[{text:task1,sub:''}]:[]};
+  if(!sched[nbDay])sched[nbDay]={gym:false,blocks:[]};
+  sched[nbDay].blocks.push(newBlock);
+  save('gwp_sched3',sched);
+  closeNewBlockModal();
+  renderToday();
+}
+
+// ── EDIT MODAL ───────────────────────────────────────────────────
+function openEdit(day,bi,ii){editTarget={day,bi,ii};const item=sched[day].blocks[bi].items[ii];document.getElementById('editText').value=item.text;document.getElementById('editSub').value=item.sub||'';document.getElementById('editModal').classList.add('show');setTimeout(()=>document.getElementById('editText').focus(),100);}
+function closeModal(){document.getElementById('editModal').classList.remove('show');editTarget=null;}
+function saveEdit(){if(!editTarget)return;const{day,bi,ii}=editTarget,t=document.getElementById('editText').value.trim(),s=document.getElementById('editSub').value.trim();if(t)sched[day].blocks[bi].items[ii].text=t;sched[day].blocks[bi].items[ii].sub=s;save('gwp_sched3',sched);closeModal();renderToday();}
+
+// ── MOOD ─────────────────────────────────────────────────────────
+function setMood(m){mood=m;document.querySelectorAll('.mood-card').forEach(c=>c.className='mood-card');document.querySelectorAll('.mood-message').forEach(el=>el.classList.remove('show'));const idx=['good','overwhelmed','underwhelmed'].indexOf(m);document.querySelectorAll('.mood-card')[idx].classList.add('active-'+m);document.getElementById('msg'+m[0].toUpperCase()+m.slice(1)).classList.add('show');renderToday();}
+
+// ── TABS ─────────────────────────────────────────────────────────
+function showTab(tab,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(tab==='week')renderWeek();
+  if(tab==='food')renderFoodTab();
+}
+
+// ── WEEK ─────────────────────────────────────────────────────────
+function renderWeek(){
+  const today=todayKey(),vd=weekDay||today;
+  document.getElementById('daySelector').innerHTML=DAY_ORDER.map(d=>{
+    const isToday=d===today,active=d===vd;
+    return`<div class="day-pill ${active?'active':isToday?'today':''}" onclick="selectWeekDay('${d}')">${d}</div>`;}).join('');
+  renderWeekDetail(vd);
+}
+function selectWeekDay(day){weekDay=day;renderWeek();}
+function renderWeekDetail(dayKey){
+  const s=sched[dayKey],container=document.getElementById('week-detail');
+  if(!s){container.innerHTML='<div class="empty-state">No schedule found.</div>';return;}
+  const gymTag=s.gym?'<span class="highlight-tag">Gym day</span>':'';
+  container.innerHTML=`<div class="week-day-title">${FULL[dayKey]} ${gymTag}</div>
+    ${s.blocks.map((block,bi)=>`<div class="block" data-type="${block.type||'morning'}">
+      <div class="block-header"><div class="block-color-bar"></div><span class="block-icon">${block.icon}</span><span class="block-title">${block.title}</span><span class="block-time-display">${block.time||''}</span></div>
+      ${block.items.map(item=>`<div class="check-item"><div style="width:5px;height:5px;border-radius:50%;background:#c07840;flex-shrink:0;margin-top:8px"></div><div class="check-text">${item.text}<span class="check-sub">${item.sub||''}</span></div></div>`).join('')}
+    </div>`).join('')}`;
+}
+
+// ── HOME PRIORITIES ──────────────────────────────────────────────
+let homePrioEditing=false;
+function renderHomePrios(){
+  const rows=document.getElementById('homePrioRows');
+  const hasAny=priorities.p1||priorities.p2||priorities.p3;
+  if(homePrioEditing){
+    rows.innerHTML=[1,2,3].map(n=>`<div class="home-prio-row"><div class="home-prio-num">${n}</div><input class="home-prio-input editable" id="hp${n}" value="${priorities['p'+n]||''}" placeholder="Priority ${n}…" onblur="saveHomePrio()"></div>`).join('');
+    setTimeout(()=>document.getElementById('hp1').focus(),50);
+  } else {
+    if(!hasAny){rows.innerHTML='<div class="home-prio-empty">Tap Edit to add your 3 priorities for this week</div>';}
+    else{rows.innerHTML=[1,2,3].map(n=>{const val=priorities['p'+n];return val?`<div class="home-prio-row"><div class="home-prio-num">${n}</div><span class="home-prio-input">${val}</span></div>`:''}).join('');}
+  }
+}
+function toggleHomePrioEdit(){
+  if(homePrioEditing){saveHomePrio();homePrioEditing=false;}else{homePrioEditing=true;}
+  document.getElementById('homePrioEditBtn').textContent=homePrioEditing?'Done':'Edit';
+  document.getElementById('homePrioEditBtn').className='home-prio-edit-btn'+(homePrioEditing?' on':'');
+  renderHomePrios();
+}
+function saveHomePrio(){[1,2,3].forEach(n=>{const el=document.getElementById('hp'+n);if(el)priorities['p'+n]=el.value.trim();});save('gwp_prio',priorities);}
+
+// ── FOOD ─────────────────────────────────────────────────────────
+function getWeekLabel(offset){const d=new Date();d.setDate(d.getDate()-d.getDay()+1+(offset*7));const d2=new Date(d);d2.setDate(d.getDate()+6);const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return(offset===0?'This week — ':'')+(d.getDate()+' '+mo[d.getMonth()]+' – '+d2.getDate()+' '+mo[d2.getMonth()]);}
+function changeWeek(dir){foodWeekOffset+=dir;renderFoodTab();}
+function foodKey(day,meal){return foodWeekOffset+'_'+day+'_'+meal;}
+function renderFoodTab(){
+  document.getElementById('foodWeekLabel').textContent=getWeekLabel(foodWeekOffset);
+  const todayNum=new Date().getDay();
+  const today=DAY_ORDER[todayNum===0?6:todayNum-1];
+  if(!foodDay)foodDay=today;
+  document.getElementById('foodDayTabs').innerHTML=DAY_ORDER.map(d=>{const isToday=d===today&&foodWeekOffset===0,active=foodDay===d;return`<div class="food-day-tab ${active?'active':isToday?'today':''}" onclick="selectFoodDay('${d}')">${d}</div>`;}).join('');
+  document.getElementById('foodMeals').innerHTML=MEALS.map(meal=>{const k=foodKey(foodDay,meal.key),val=foodData[k]||'';return`<div class="meal-row"><div class="meal-label"><span class="meal-icon">${meal.icon}</span><span class="meal-name">${meal.label}</span><span class="meal-time">${meal.time}</span></div><textarea class="meal-input" rows="2" placeholder="${meal.placeholder}" onblur="saveMeal('${foodDay}','${meal.key}',this.value)">${val}</textarea></div>`;}).join('');
+}
+function selectFoodDay(day){foodDay=day;renderFoodTab();}
+function saveMeal(day,meal,val){foodData[foodKey(day,meal)]=val;save('gwp_food2',foodData);}
+
+// ── INIT ─────────────────────────────────────────────────────────
+function initDate(){
+  const now=new Date();
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('dateBadge').textContent=days[now.getDay()].slice(0,3)+', '+months[now.getMonth()]+' '+now.getDate();
+  const h=now.getHours();
+  const greet=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  document.querySelector('.greeting').innerHTML=`${greet}, <span>Esther</span> ✦`;
+}
+
+initDate();
+renderHomePrios();
+renderToday();
+updateProgress();
+</script>
+</body>
+</html>
