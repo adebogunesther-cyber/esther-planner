@@ -402,50 +402,88 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <script>
 const DEFAULT = {
   Mon:{gym:true,blocks:[
-    {type:'devotion',icon:'🙏',title:'Morning Devotion',time:'6:00–7:30 AM',items:[{text:'Wake up & freshen up',sub:'6:00 AM'},{text:'Join online church prayer',sub:'6:15 AM'},{text:'Personal Bible study',sub:'7:00–7:30 AM'}]},
-    {type:'gym',icon:'🏋️',title:'Gym',time:'7:30–9:30 AM',items:[{text:'Gym session',sub:'Mon / Wed / Fri / Sat'}]},
-    {type:'morning',icon:'🌅',title:'Morning Power Block',time:'10:00 AM–12:00 PM',items:[{text:'Write your ONE non-negotiable task for today',sub:'Do this before anything else'},{text:'Glossy with Pride — orders, content or customer care',sub:'60–75 mins focused'},{text:'GlossyBeautyStudio — portfolio or client outreach',sub:'30–45 mins'}]},
-    {type:'afternoon',icon:'☀️',title:'Afternoon Work Block',time:'1:00–4:00 PM',items:[{text:'Glossy brand / strategy work',sub:'45 mins'},{text:'Social media content or scheduling',sub:'30 mins'},{text:'Admin batch — emails, DMs, errands',sub:'Mon/Wed/Fri only — 30 mins'}]},
-    {type:'evening',icon:'🌙',title:'Evening Commitments',time:'8:00–10:00 PM+',items:[{text:'Discipleship Bible study',sub:'8:00–9:00 PM'},{text:'Meeting with your disciple',sub:'9:00–10:00 PM'},{text:'Call with partner',sub:'10:00 PM+'}]}
+    {type:'devotion',icon:'🚿',title:'Wake Up & Get Ready',time:'5:30–6:00 AM',items:[{text:'Bath + get dressed',sub:'5:30–6:00 AM'},{text:'Lay out clothes the night before',sub:'Tip — removes one decision from a packed morning'}]},
+    {type:'devotion',icon:'🙏',title:'Devotion',time:'6:00–7:00 AM',items:[{text:'30 mins prayer',sub:'6:00–6:30 AM'},{text:'30 mins Word',sub:'6:30–7:00 AM'}]},
+    {type:'morning',icon:'📋',title:'Customer Invoices',time:'7:00–8:30 AM',items:[{text:'Process and send customer invoices',sub:'7:00–8:30 AM'},{text:'Follow up on any pending payments',sub:''}]},
+    {type:'morning',icon:'🚗',title:'Leave for Office',time:'8:30 AM',items:[{text:'Leave for Party Packs Solution office',sub:'Aim to leave by 8:30 AM'}]},
+    {type:'afternoon',icon:'💼',title:'Party Packs Solution',time:'9:00 AM–3:00/5:00 PM',items:[{text:'Work at Party Packs Solution',sub:'9:00 AM – 3:00 or 5:00 PM'}]},
+    {type:'rest',icon:'😮‍💨',title:'Rest & Decompress',time:'Arrive home',items:[{text:'Rest and decompress after work',sub:'30–45 mins — non-negotiable'}]},
+    {type:'gym',icon:'🏋️',title:'Gym',time:'5:30–6:30 PM',items:[{text:'Gym session',sub:'Mon / Wed / Fri'},{text:'Bath after gym',sub:''}]},
+    {type:'evening',icon:'🍽️',title:'Dinner & Wind Down',time:'7:00–8:00 PM',items:[{text:'Dinner',sub:'7:00–7:30 PM'},{text:'Wind down',sub:'7:30–8:00 PM'}]},
+    {type:'church',icon:'✝️',title:'YHWH Discipleship',time:'8:00–9:00 PM',items:[{text:'Discipleship session',sub:'8:00–9:00 PM'}]},
+    {type:'evening',icon:'📞',title:'Call with Your Man',time:'9:30–11:00 PM',items:[{text:'Call with partner',sub:'9:30–11:00 PM'}]},
+    {type:'rest',icon:'😴',title:'Wind Down & Sleep',time:'11:00–11:30 PM',items:[{text:'Wind down routine',sub:'11:00–11:30 PM'},{text:'Sleep',sub:'By 11:30 PM'}]}
   ]},
   Tue:{gym:false,blocks:[
-    {type:'devotion',icon:'🙏',title:'Morning Devotion',time:'6:00–7:30 AM',items:[{text:'Wake up & freshen up',sub:'6:00 AM'},{text:'Prayer & online church prayer',sub:'6:15 AM'},{text:'Full Bible study — no gym rush',sub:'6:30–7:30 AM'}]},
-    {type:'morning',icon:'🌅',title:'Morning Power Block',time:'8:00 AM–12:00 PM',items:[{text:'Write your ONE non-negotiable task',sub:'Before you open Instagram'},{text:'Deep work — Glossy with Pride strategy or content',sub:'90 mins — peak energy window'},{text:'GlossyBeautyStudio — bookings, DMs or portfolio',sub:'45 mins'}]},
-    {type:'afternoon',icon:'☀️',title:'Afternoon Block',time:'1:00–4:00 PM',items:[{text:'Glossy content creation or campaign planning',sub:'60 mins'},{text:'MUA skill practice or makeup academy review',sub:'45 mins'},{text:'Personal errands or rest',sub:'Protect this buffer'}]},
-    {type:'evening',icon:'🌙',title:'Evening',time:'8:00–10:00 PM+',items:[{text:'Discipleship Bible study',sub:'8:00–9:00 PM'},{text:'Call with partner',sub:'10:00 PM+'}]}
+    {type:'devotion',icon:'🚿',title:'Wake Up & Get Ready',time:'5:30–6:00 AM',items:[{text:'Bath + get dressed',sub:'5:30–6:00 AM'},{text:'Clothes already laid out from the night before',sub:''}]},
+    {type:'devotion',icon:'🙏',title:'Devotion',time:'6:00–7:00 AM',items:[{text:'30 mins prayer',sub:'6:00–6:30 AM'},{text:'30 mins Word',sub:'6:30–7:00 AM'}]},
+    {type:'morning',icon:'📋',title:'Customer Invoices',time:'7:00–8:30 AM',items:[{text:'Process and send customer invoices',sub:'7:00–8:30 AM'},{text:'Follow up on any pending payments',sub:''}]},
+    {type:'morning',icon:'🚗',title:'Leave for Office',time:'8:30 AM',items:[{text:'Leave for Party Packs Solution office',sub:'Aim to leave by 8:30 AM'}]},
+    {type:'afternoon',icon:'💼',title:'Party Packs Solution',time:'9:00 AM–3:00/5:00 PM',items:[{text:'Work at Party Packs Solution',sub:'9:00 AM – 3:00 or 5:00 PM'}]},
+    {type:'rest',icon:'😮‍💨',title:'Rest & Decompress',time:'Arrive home',items:[{text:'Rest and decompress after work',sub:'30–45 mins — non-negotiable'}]},
+    {type:'rest',icon:'💆🏽',title:'Self-Care & Bath',time:'6:00–7:00 PM',items:[{text:'Self-care routine',sub:'Tue / Thu / Sat'},{text:'Bath',sub:''}]},
+    {type:'evening',icon:'🍽️',title:'Dinner & Wind Down',time:'7:00–8:00 PM',items:[{text:'Dinner',sub:'7:00–7:30 PM'},{text:'Wind down',sub:'7:30–8:00 PM'}]},
+    {type:'church',icon:'✝️',title:'YHWH Discipleship',time:'8:00–9:00 PM',items:[{text:'Discipleship session',sub:'8:00–9:00 PM'}]},
+    {type:'evening',icon:'📞',title:'Call with Your Man',time:'9:30–11:00 PM',items:[{text:'Call with partner',sub:'9:30–11:00 PM'}]},
+    {type:'rest',icon:'😴',title:'Wind Down & Sleep',time:'11:00–11:30 PM',items:[{text:'Wind down routine',sub:'11:00–11:30 PM'},{text:'Sleep',sub:'By 11:30 PM'}]}
   ]},
   Wed:{gym:true,blocks:[
-    {type:'devotion',icon:'🙏',title:'Morning Devotion',time:'6:00–7:30 AM',items:[{text:'Wake up & freshen up',sub:'6:00 AM'},{text:'Online church prayer',sub:'6:15 AM'},{text:'Bible study',sub:'7:00–7:30 AM'}]},
-    {type:'gym',icon:'🏋️',title:'Gym',time:'7:30–9:30 AM',items:[{text:'Gym session',sub:'Mon / Wed / Fri / Sat'}]},
-    {type:'morning',icon:'🌅',title:'Morning Power Block',time:'10:00 AM–12:00 PM',items:[{text:'Write your ONE non-negotiable task',sub:'Before you open Instagram'},{text:'Glossy with Pride — content or sales follow-up',sub:'60 mins'},{text:'Social media scheduling for the week',sub:'30 mins — batch it here'}]},
-    {type:'afternoon',icon:'☀️',title:'Afternoon Block',time:'1:00–4:00 PM',items:[{text:'GlossyBeautyStudio — bookings or portfolio',sub:'60 mins'},{text:'Admin batch',sub:'30 mins — Wed is an admin day'},{text:'Rest or content creation',sub:'Recharge before busy evening'}]},
-    {type:'evening',icon:'🌙',title:'Evening Commitments',time:'8:00–10:00 PM+',items:[{text:'Discipleship Bible study',sub:'8:00–9:00 PM'},{text:'Meeting with your disciple',sub:'9:00–10:00 PM'},{text:'Call with partner',sub:'10:00 PM+'}]}
+    {type:'devotion',icon:'🚿',title:'Wake Up & Get Ready',time:'5:30–6:00 AM',items:[{text:'Bath + get dressed',sub:'5:30–6:00 AM'},{text:'Clothes already laid out from the night before',sub:''}]},
+    {type:'devotion',icon:'🙏',title:'Devotion',time:'6:00–7:00 AM',items:[{text:'30 mins prayer',sub:'6:00–6:30 AM'},{text:'30 mins Word',sub:'6:30–7:00 AM'}]},
+    {type:'morning',icon:'📋',title:'Customer Invoices',time:'7:00–8:30 AM',items:[{text:'Process and send customer invoices',sub:'7:00–8:30 AM'},{text:'Follow up on any pending payments',sub:''}]},
+    {type:'morning',icon:'🚗',title:'Leave for Office',time:'8:30 AM',items:[{text:'Leave for Party Packs Solution office',sub:'Aim to leave by 8:30 AM'}]},
+    {type:'afternoon',icon:'💼',title:'Party Packs Solution',time:'9:00 AM–3:00/5:00 PM',items:[{text:'Work at Party Packs Solution',sub:'9:00 AM – 3:00 or 5:00 PM'}]},
+    {type:'rest',icon:'😮‍💨',title:'Rest & Decompress',time:'Arrive home',items:[{text:'Rest and decompress after work',sub:'30–45 mins — non-negotiable'}]},
+    {type:'gym',icon:'🏋️',title:'Gym',time:'5:30–6:30 PM',items:[{text:'Gym session',sub:'Mon / Wed / Fri'},{text:'Bath after gym',sub:''}]},
+    {type:'evening',icon:'🍽️',title:'Dinner & Wind Down',time:'7:00–8:00 PM',items:[{text:'Dinner',sub:'7:00–7:30 PM'},{text:'Wind down',sub:'7:30–8:00 PM'}]},
+    {type:'church',icon:'✝️',title:'YHWH Discipleship',time:'8:00–9:00 PM',items:[{text:'Discipleship session',sub:'8:00–9:00 PM'}]},
+    {type:'evening',icon:'📞',title:'Call with Your Man',time:'9:30–11:00 PM',items:[{text:'Call with partner',sub:'9:30–11:00 PM'}]},
+    {type:'rest',icon:'😴',title:'Wind Down & Sleep',time:'11:00–11:30 PM',items:[{text:'Wind down routine',sub:'11:00–11:30 PM'},{text:'Sleep',sub:'By 11:30 PM'}]}
   ]},
   Thu:{gym:false,blocks:[
-    {type:'devotion',icon:'🙏',title:'Morning Devotion',time:'6:00–7:30 AM',items:[{text:'Wake up & freshen up',sub:'6:00 AM'},{text:'Prayer & online church prayer',sub:'6:15 AM'},{text:'Full Bible study',sub:'6:30–7:30 AM'}]},
-    {type:'morning',icon:'🌅',title:'Morning Power Block',time:'8:00 AM–12:00 PM',items:[{text:'Write your ONE non-negotiable task',sub:'Write it before anything else'},{text:'Deep work — biggest business priority this week',sub:'90 mins — your best hours'},{text:'Glossy with Pride content or brand strategy',sub:'60 mins'}]},
-    {type:'afternoon',icon:'☀️',title:'Afternoon Block',time:'1:00–4:00 PM',items:[{text:'MUA practice or client-facing work',sub:'60 mins'},{text:'Glossy customer care or orders',sub:'45 mins'},{text:'Rest or personal time',sub:'Long evening ahead — protect energy'}]},
-    {type:'evening',icon:'🌙',title:'Evening',time:'8:00–10:00 PM+',items:[{text:'Discipleship Bible study',sub:'8:00–9:00 PM'},{text:'Call with partner',sub:'10:00 PM+'}]}
+    {type:'devotion',icon:'🚿',title:'Wake Up & Get Ready',time:'5:30–6:00 AM',items:[{text:'Bath + get dressed',sub:'5:30–6:00 AM'},{text:'Clothes already laid out from the night before',sub:''}]},
+    {type:'devotion',icon:'🙏',title:'Devotion',time:'6:00–7:00 AM',items:[{text:'30 mins prayer',sub:'6:00–6:30 AM'},{text:'30 mins Word',sub:'6:30–7:00 AM'}]},
+    {type:'morning',icon:'📋',title:'Customer Invoices',time:'7:00–8:30 AM',items:[{text:'Process and send customer invoices',sub:'7:00–8:30 AM'},{text:'Follow up on any pending payments',sub:''}]},
+    {type:'morning',icon:'🚗',title:'Leave for Office',time:'8:30 AM',items:[{text:'Leave for Party Packs Solution office',sub:'Aim to leave by 8:30 AM'}]},
+    {type:'afternoon',icon:'💼',title:'Party Packs Solution',time:'9:00 AM–3:00/5:00 PM',items:[{text:'Work at Party Packs Solution',sub:'9:00 AM – 3:00 or 5:00 PM'}]},
+    {type:'rest',icon:'😮‍💨',title:'Rest & Decompress',time:'Arrive home',items:[{text:'Rest and decompress after work',sub:'30–45 mins — non-negotiable'}]},
+    {type:'rest',icon:'💆🏽',title:'Self-Care & Bath',time:'6:00–7:00 PM',items:[{text:'Self-care routine',sub:'Tue / Thu / Sat'},{text:'Bath',sub:''}]},
+    {type:'evening',icon:'🍽️',title:'Dinner & Wind Down',time:'7:00–8:00 PM',items:[{text:'Dinner',sub:'7:00–7:30 PM'},{text:'Wind down',sub:'7:30–8:00 PM'}]},
+    {type:'church',icon:'✝️',title:'YHWH Discipleship',time:'8:00–9:00 PM',items:[{text:'Discipleship session',sub:'8:00–9:00 PM'}]},
+    {type:'evening',icon:'📞',title:'Call with Your Man',time:'9:30–11:00 PM',items:[{text:'Call with partner',sub:'9:30–11:00 PM'}]},
+    {type:'rest',icon:'😴',title:'Wind Down & Sleep',time:'11:00–11:30 PM',items:[{text:'Wind down routine',sub:'11:00–11:30 PM'},{text:'Sleep',sub:'By 11:30 PM'}]}
   ]},
   Fri:{gym:true,blocks:[
-    {type:'devotion',icon:'🙏',title:'Morning Devotion',time:'6:00–7:30 AM',items:[{text:'Wake up & freshen up',sub:'6:00 AM'},{text:'Online church prayer',sub:'6:15 AM'},{text:'Bible study',sub:'7:00–7:30 AM'}]},
-    {type:'gym',icon:'🏋️',title:'Gym',time:'7:30–9:30 AM',items:[{text:'Gym session',sub:'Mon / Wed / Fri / Sat'}]},
-    {type:'morning',icon:'🌅',title:'Morning Power Block',time:'10:00 AM–12:00 PM',items:[{text:'Week review — what got done, what didn\'t',sub:'10 mins, no judgment'},{text:'Glossy with Pride — wrap up week\'s tasks',sub:'45 mins'},{text:'Admin batch — final sweep of the week',sub:'30 mins'}]},
-    {type:'afternoon',icon:'☀️',title:'Afternoon — Creative & Rest',time:'1:00–5:00 PM',items:[{text:'Creative or fun work — content, branding, ideas',sub:'End the week on something you enjoy'},{text:'Rest, social time, self-care',sub:'You\'ve earned it'}]},
-    {type:'evening',icon:'🌙',title:'Evening',time:'8:00–10:00 PM+',items:[{text:'Discipleship Bible study',sub:'8:00–9:00 PM'},{text:'Call with partner',sub:'10:00 PM+'}]}
+    {type:'devotion',icon:'🚿',title:'Wake Up & Get Ready',time:'5:30–6:00 AM',items:[{text:'Bath + get dressed',sub:'5:30–6:00 AM'},{text:'Clothes already laid out from the night before',sub:''}]},
+    {type:'devotion',icon:'🙏',title:'Devotion',time:'6:00–7:00 AM',items:[{text:'30 mins prayer',sub:'6:00–6:30 AM'},{text:'30 mins Word',sub:'6:30–7:00 AM'}]},
+    {type:'morning',icon:'📋',title:'Customer Invoices',time:'7:00–8:30 AM',items:[{text:'Process and send customer invoices',sub:'7:00–8:30 AM'},{text:'Follow up on any pending payments',sub:''}]},
+    {type:'morning',icon:'🚗',title:'Leave for Office',time:'8:30 AM',items:[{text:'Leave for Party Packs Solution office',sub:'Aim to leave by 8:30 AM'}]},
+    {type:'afternoon',icon:'💼',title:'Party Packs Solution',time:'9:00 AM–3:00/5:00 PM',items:[{text:'Work at Party Packs Solution',sub:'9:00 AM – 3:00 or 5:00 PM'}]},
+    {type:'rest',icon:'😮‍💨',title:'Rest & Decompress',time:'Arrive home',items:[{text:'Rest and decompress after work',sub:'30–45 mins — non-negotiable'}]},
+    {type:'gym',icon:'🏋️',title:'Gym',time:'5:30–6:30 PM',items:[{text:'Gym session',sub:'Mon / Wed / Fri'},{text:'Bath after gym',sub:''}]},
+    {type:'evening',icon:'🍽️',title:'Dinner & Wind Down',time:'7:00–8:00 PM',items:[{text:'Dinner',sub:'7:00–7:30 PM'},{text:'Wind down',sub:'7:30–8:00 PM'}]},
+    {type:'church',icon:'✝️',title:'YHWH Discipleship',time:'8:00–9:00 PM',items:[{text:'Discipleship session',sub:'8:00–9:00 PM'}]},
+    {type:'evening',icon:'📞',title:'Call with Your Man',time:'9:30–11:00 PM',items:[{text:'Call with partner',sub:'9:30–11:00 PM'}]},
+    {type:'rest',icon:'😴',title:'Wind Down & Sleep',time:'11:00–11:30 PM',items:[{text:'Wind down routine',sub:'11:00–11:30 PM'},{text:'Sleep',sub:'By 11:30 PM'}]}
   ]},
-  Sat:{gym:true,blocks:[
-    {type:'devotion',icon:'🙏',title:'Morning Devotion',time:'6:30–7:30 AM',items:[{text:'Wake up & freshen up',sub:'6:30 AM'},{text:'Personal prayer',sub:'6:30–7:00 AM'},{text:'Bible study',sub:'7:00–7:30 AM'}]},
-    {type:'gym',icon:'🏋️',title:'Gym',time:'7:30–9:30 AM',items:[{text:'Gym session',sub:'Mon / Wed / Fri / Sat'}]},
-    {type:'rest',icon:'💆',title:'Recovery & Rest',time:'10:00 AM onwards',items:[{text:'Do absolutely nothing business-related',sub:'This is your rule, not a suggestion'},{text:'Nourish yourself — eat well, rest, hydrate',sub:'Your body is carrying a lot this week'},{text:'Something purely for enjoyment — walk, movie, friends',sub:'Anything that fills your cup'},{text:'Light skin care or self-care routine',sub:'You deserve it'},{text:'Prepare outfit for Sunday church',sub:'Lay it out tonight so Sunday morning is smooth'}]},
-    {type:'evening',icon:'🌙',title:'Evening Wind Down',time:'8:00 PM+',items:[{text:'Brain dump — offload anything on your mind',sub:'15 mins max, then close it'},{text:'Call with partner',sub:'10:00 PM+'}]}
+  Sat:{gym:false,blocks:[
+    {type:'devotion',icon:'🚿',title:'Wake Up & Get Ready',time:'5:30–6:00 AM',items:[{text:'Bath + get dressed',sub:'5:30–6:00 AM'},{text:'Clothes already laid out from the night before',sub:''}]},
+    {type:'devotion',icon:'🙏',title:'Devotion',time:'6:00–7:00 AM',items:[{text:'30 mins prayer',sub:'6:00–6:30 AM'},{text:'30 mins Word',sub:'6:30–7:00 AM'}]},
+    {type:'morning',icon:'📋',title:'Customer Invoices',time:'7:00–8:30 AM',items:[{text:'Process and send customer invoices',sub:'7:00–8:30 AM'},{text:'Follow up on any pending payments',sub:''}]},
+    {type:'morning',icon:'🚗',title:'Leave for Office',time:'8:30 AM',items:[{text:'Leave for Party Packs Solution office',sub:'Aim to leave by 8:30 AM'}]},
+    {type:'afternoon',icon:'💼',title:'Party Packs Solution',time:'9:00 AM–3:00/5:00 PM',items:[{text:'Work at Party Packs Solution',sub:'9:00 AM – 3:00 or 5:00 PM'}]},
+    {type:'rest',icon:'😮‍💨',title:'Rest & Decompress',time:'Arrive home',items:[{text:'Rest and decompress after work',sub:'30–45 mins — non-negotiable'}]},
+    {type:'rest',icon:'💆🏽',title:'Self-Care & Bath',time:'6:00–7:00 PM',items:[{text:'Self-care routine',sub:'Tue / Thu / Sat'},{text:'Bath',sub:''}]},
+    {type:'evening',icon:'🍽️',title:'Dinner & Wind Down',time:'7:00–8:00 PM',items:[{text:'Dinner',sub:'7:00–7:30 PM'},{text:'Wind down',sub:'7:30–8:00 PM'}]},
+    {type:'church',icon:'✝️',title:'YHWH Discipleship',time:'8:00–9:00 PM',items:[{text:'Discipleship session',sub:'8:00–9:00 PM'}]},
+    {type:'evening',icon:'📞',title:'Call with Your Man',time:'9:30–11:00 PM',items:[{text:'Call with partner',sub:'9:30–11:00 PM'}]},
+    {type:'rest',icon:'😴',title:'Wind Down & Sleep',time:'11:00–11:30 PM',items:[{text:'Wind down routine',sub:'11:00–11:30 PM'},{text:'Sleep',sub:'By 11:30 PM'}]}
   ]},
   Sun:{gym:false,blocks:[
-    {type:'church',icon:'⛪',title:'Church — First Service',time:'8:00–10:00 AM',items:[{text:'Get ready & leave for church',sub:'Aim to leave by 7:30 AM'},{text:'First service',sub:'8:00–10:00 AM'},{text:'Travel home',sub:'Home by 12:00–1:00 PM'}]},
-    {type:'rest',icon:'🛋️',title:'Rest & Lunch',time:'1:00–2:00 PM',items:[{text:'Eat a proper meal — no skipping today',sub:'You need energy for the reset'},{text:'Short rest or nap',sub:'Fully optional but encouraged'}]},
-    {type:'reset',icon:'📋',title:'Weekly Reset',time:'2:00–4:00 PM',items:[{text:'Brain dump — every open task, idea, worry',sub:'Clear your head completely'},{text:'Review last week — what moved, what didn\'t',sub:'Data, not judgment'},{text:'Enter your 3 priorities in the strip at the top',sub:'Across all businesses — only 3'},{text:'Assign priorities to specific days',sub:'Block the time now'},{text:'Plan your meals for the week',sub:'Open the Food tab and fill it in'}]},
-    {type:'afternoon',icon:'☀️',title:'Monday Prep',time:'4:00–5:00 PM',items:[{text:'Lay out Monday outfit & gym bag',sub:'Zero friction to start the week'},{text:'Confirm gym time for Monday morning',sub:'Tell someone if it helps you commit'},{text:'Rest completely after this — no more work',sub:'Sunday evenings are protected'}]},
-    {type:'evening',icon:'🌙',title:'Evening',time:'10:00 PM+',items:[{text:'Call with partner',sub:'10:00 PM+'}]}
+    {type:'church',icon:'⛪',title:'Church',time:'Morning',items:[{text:'Church service',sub:'Morning'},{text:'Rest, self-care, whatever restores you',sub:'Full off day'}]},
+    {type:'rest',icon:'💆',title:'Rest & Self-Care',time:'Afternoon',items:[{text:'Eat well, nap, decompress fully',sub:'No work today'},{text:'Something that fills your cup',sub:'Walk, movie, friends, anything'}]},
+    {type:'reset',icon:'📋',title:'Weekly Reset',time:'Evening',items:[{text:'Brain dump — every open task, idea, worry',sub:'Clear your head completely'},{text:'Review last week — what moved, what didn\'t',sub:'Data, not judgment'},{text:'Enter your 3 priorities in the strip at the top',sub:'Across all businesses — only 3'},{text:'Plan your meals for the week',sub:'Open the Food tab and fill it in'},{text:'Lay out Monday outfit',sub:'Protect that 5:30 AM window'}]},
+    {type:'evening',icon:'📞',title:'Call with Your Man',time:'9:30–11:00 PM',items:[{text:'Call with partner',sub:'9:30–11:00 PM'}]}
   ]}
 };
 
